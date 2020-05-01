@@ -18,7 +18,8 @@ You'll need the following to execute the scripts above that involve syncing data
 For syncing data Coda to Coda and Sheets to Sheets, read [this tutorial](https://coda.io/@atc/how-to-sync-data-between-coda-docs-and-google-sheets-using-googl). 
 For sycning data between Coda and Google Sheets, read this tutorial.
 
-## Caveats
+## Other notes
+* When possible, keep the column names between your Coda doc and Google Sheet the same. There are some exceptions to this which are mentioned in the tutorial.
 * You will have to set up a [time-driven installable trigger](https://developers.google.com/apps-script/guides/triggers/installable) in Google App Scripts to get the scripts to run every minute, hour, etc.
 * For syncing data from a Google Sheet to Coda, you must have *edit* or *view* access to the Gogole Sheet
 * You cannot sort data in the Google Sheet if syncing from Sheets to Coda (read tutorial for more detail)
