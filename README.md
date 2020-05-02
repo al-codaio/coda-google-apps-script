@@ -37,7 +37,7 @@ You can follow steps 1-8 in the Coda to Google Sheets section above to get the v
 * When possible, keep the column names between your Coda doc and Google Sheet the same. There are some exceptions to this which are mentioned in the [blog post](https://coda.io/@atc/how-to-sync-data-from-coda-to-google-sheets-and-vice-versa-with-google-apps-script-tutorial).
 * You will have to set up a [time-driven installable trigger](https://developers.google.com/apps-script/guides/triggers/installable) in Google App Scripts to get the scripts to run every minute, hour, etc.
 * For syncing data from a Google Sheet to Coda, you must have *edit* or *view* access to the Gogole Sheet
-* You cannot sort data in the Google Sheet if syncing from Sheets to Coda (read [tutorial](https://coda.io/@atc/how-to-sync-data-from-coda-to-google-sheets-and-vice-versa-with-google-apps-script-tutorial) for more detail)
+* You cannot sort data in the Google Sheet if syncing from Sheets to Coda (read [blog post](https://coda.io/@atc/how-to-sync-data-from-coda-to-google-sheets-and-vice-versa-with-google-apps-script-tutorial) for more detail)
 * Formulas you write in Coda or Google Sheets will get lost when synced to the target
 
 ## Tutorials
