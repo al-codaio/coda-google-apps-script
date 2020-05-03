@@ -166,19 +166,14 @@ function addDeleteToCoda() {
     CodaAPI.upsertRows(TARGET_DOC_ID, TARGET_TABLE_ID, {rows: sortedSourceRows});
     
     if (!REWRITE_CODA_TABLE) {
-      // Following three commands to see if new rows have propagated to Coda table and therefore new row URLs exist (will be repeated in time delay loop).
       var currentCodaRows = retrieveRows();
-      var currentTargetRowURLs = getTargetRowValues(currentCodaRows, -1);
-      var newSourceRows = findNewRows(sourceRows, currentTargetRowURLs);
-    
+        
       // Time delay to wait for Coda API to propagate rows into Coda. Times out after 30 seconds.
       while(currentCodaRows.length <= allRows['targetRows'].length) {
         timer += 2;
         if (timer == 60) { break; }
         Utilities.sleep(2000);
         currentCodaRows = retrieveRows(); 
-        currentTargetRowURLs = getTargetRowValues(currentCodaRows, -1);
-        newSourceRows = findNewRows(sourceRows, currentTargetRowURLs);      
       }
        
       //Write new Source Row URLs to Google Sheets
