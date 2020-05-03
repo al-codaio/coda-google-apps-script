@@ -237,12 +237,12 @@ function printDocTables() {
 
 // Sort function for array of arrays which sorts Google Sheets rows by SOURCE_SHEET_SOURCE_ROW_COLUMN in alphabetical order
 function sortArray(a, b) {
-  var upperA = a[rowURLIndex].toUpperCase();
-  var upperB = b[rowURLIndex].toUpperCase();
-  if (upperA === upperB) {
+  var x = a[rowURLIndex];
+  var y = b[rowURLIndex];
+  if (x === y) {
     return 0;
   }
   else {
-    return (upperA < upperB) ? -1 : 1;
+    return (x < y) ? -1 : 1;
   }
 }
