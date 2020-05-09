@@ -40,6 +40,7 @@ You can follow steps 1-8 in the Coda to Google Sheets section above to get the v
 * For syncing data from a Google Sheet to Coda, you must have *edit* or *view* access to the Google Sheet
 * You cannot sort data in the Google Sheet if syncing from Sheets to Coda (read [blog post](https://coda.io/@atc/how-to-sync-data-from-coda-to-google-sheets-and-vice-versa-with-google-apps-script-tutorial) for more detail)
 * Formulas you write in Coda or Google Sheets will get lost when synced to the target
+* To sync a *view* instead of a *table* from a [Coda table to Google Sheets](https://github.com/albertc44/coda-google-apps-script/blob/master/coda_to_sheets.js), change `getTable` to `getView` in [line 203](https://github.com/albertc44/coda-google-apps-script/blob/master/coda_to_sheets.js#L203),  change `listColumns` to `listViewColumns` in [line 206](https://github.com/albertc44/coda-google-apps-script/blob/master/coda_to_sheets.js#L206), and change `listRows` to `listViewRows` in [line 209](https://github.com/albertc44/coda-google-apps-script/blob/master/coda_to_sheets.js#L209)
 
 ## Tutorials
 Here are a few blog posts explaining how the scripts work. For syncing data Coda to Coda and Sheets to Sheets, read [this tutorial](https://coda.io/@atc/how-to-sync-data-between-coda-docs-and-google-sheets-using-googl). 
