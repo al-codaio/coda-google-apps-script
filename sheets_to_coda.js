@@ -1,6 +1,6 @@
 // One-way data sync from Google Sheets to Coda using Google Apps Script
 // Author: Al Chen (al@coda.io)
-// Last Updated: July 15, 2020
+// Last Updated: July 16, 2020
 // Notes: Assumes you are using the V8 runtime (https://developers.google.com/apps-script/guides/v8-runtime)
 // Coda's library for Google Apps Script: 15IQuWOk8MqT50FDWomh57UqWGH23gjsWVWYFms3ton6L-UHmefYHS9Vl
 
@@ -342,7 +342,7 @@ function retrieveRows() {
   var targetColumns = CodaAPI.listColumns(TARGET_DOC_ID, TARGET_TABLE_ID).items.map(function(item) { return item.name; });
   
   do {
-    var response = CodaAPI.listRows(TARGET_DOC_ID, TARGET_TABLE_ID, {limit: 500, pageToken: pageToken, useColumnNames: true});
+    var response = CodaAPI.listRows(TARGET_DOC_ID, TARGET_TABLE_ID, {limit: 500, pageToken: pageToken, useColumnNames: true, sortBy: 'natural'});
     var targetRows = targetRows.concat(response.items);
     pageToken = response.nextPageToken;
   } while (pageToken);
