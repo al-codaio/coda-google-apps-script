@@ -1,6 +1,6 @@
 // One-way data sync from Google Sheets to Coda using Google Apps Script
 // Author: Al Chen (al@coda.io)
-// Last Updated: May 3, 2020
+// Last Updated: July 15, 2020
 // Notes: Assumes you are using the V8 runtime (https://developers.google.com/apps-script/guides/v8-runtime)
 // Coda's library for Google Apps Script: 15IQuWOk8MqT50FDWomh57UqWGH23gjsWVWYFms3ton6L-UHmefYHS9Vl
 
@@ -163,13 +163,15 @@ function addDeleteToCoda() {
     Logger.log('::::: Adding %s new rows from Google Sheets => "%s" in Coda...', sourceRows.length, codaTableName);
     var sortedSourceRows = sortSheetsTableCols(sourceRows)
     var timer = 0;
-    CodaAPI.upsertRows(TARGET_DOC_ID, TARGET_TABLE_ID, {rows: sortedSourceRows});
+    for (var i = 0; i < sortedSourceRows.length; i += 500) {
+      CodaAPI.upsertRows(TARGET_DOC_ID, TARGET_TABLE_ID, {rows: sortedSourceRows.slice(i, i + 500)});
+    }
     
     if (!REWRITE_CODA_TABLE) {
       var currentCodaRows = retrieveRows();
         
       // Time delay to wait for Coda API to propagate rows into Coda. Times out after 30 seconds.
-      while(currentCodaRows.length <= allRows['targetRows'].length) {
+      while(currentCodaRows.length < allRows['targetRows'].length + sourceRows.length) {
         timer += 2;
         if (timer == 60) { break; }
         Utilities.sleep(2000);
