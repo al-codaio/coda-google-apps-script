@@ -1,3 +1,5 @@
+[![Coda API 1.0.0](https://img.shields.io/badge/Coda%20API-1.0.0-orange)](https://coda.io/developers/apis/v1)
+
 # One-way data syncs between Coda and Google Sheets
 These are [Google Apps Scripts](https://developers.google.com/apps-script/overview) for syncing data between a [Coda doc](www.coda.io) and a Google Sheets file. The scripts supports adding, deleting, and updating rows of data in your target Coda doc or Google Sheet. List of the scripts in this repo:
 1. [**coda_to_coda.js**](https://github.com/albertc44/coda-google-apps-script/blob/master/coda_to_coda.js) - Sync data from tables in one Coda doc to tables in another Coda doc ([gist](https://gist.github.com/albertc44/c3d5ebc2a9ec00a28e561ea8e64fc0c5))
