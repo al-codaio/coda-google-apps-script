@@ -1,6 +1,6 @@
 // One-way data sync from Coda to Google Sheets using Google Apps Script
 // Author: Al Chen (al@coda.io)
-// Last Updated: July 16, 2020
+// Last Updated: March 6th, 2024
 // Notes: Assumes you are using the V8 runtime (https://developers.google.com/apps-script/guides/v8-runtime)
 // Coda's library for Google Apps Script: 15IQuWOk8MqT50FDWomh57UqWGH23gjsWVWYFms3ton6L-UHmefYHS9Vl
 
