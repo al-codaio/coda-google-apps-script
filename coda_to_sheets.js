@@ -9,7 +9,7 @@
 CodaAPI.authenticate('YOUR_API_KEY')
 SOURCE_DOC_ID = 'YOUR_SOURCE_DOC_ID'
 SOURCE_TABLE_ID = 'YOUR_SOURCE_TABLE_ID'
-TARGET_SHEET_ID = 'YOUR_GOOGLE_SHEETS_ID' 
+TARGET_SHEET_ID = 'YOUR_GOOGLE_SHEETS_ID'
 TARGET_WORKSHEET_NAME = 'YOUR_GOOGLE_SHEETS_WORKSHEET_NAME'
 TARGET_SHEET_SOURCE_ROW_COLUMN = 'YOUR_SOURCE_ROW_URL_COLUMN_NAME'
 
@@ -35,7 +35,7 @@ function updateSheet() {
   var sourceRows = allRows['sourceRows'];
   var targetRows = allRows['targetRows'];
   var sortedTargetRows = targetRows.sort(sortArray);
-  var targetRowURLs = toWorksheet.getRange(2, rowURLIndex + 1, targetRows.length).getValues().flat();  
+  var targetRowURLs = toWorksheet.getRange(2, rowURLIndex + 1, targetRows.length).getValues().flat();
   var editCount = 0;
 
   // Find rows in Coda table only if it exists in Sheets
@@ -43,35 +43,35 @@ function updateSheet() {
     var rowURL = row['cells'].slice(-1)[0]['value'];
     if (targetRowURLs.indexOf(rowURL) != -1) {
       matchingRows.push(row)
-    }        
+    }
   })
   var sortedMatchingRows = convertValues(sortCodaTableCols(matchingRows)).sort(sortArray)
   var numCols = sortedMatchingRows[0].length;
-  
+
   // Create array of rows that need to be updated in Sheets
   for (var i = 0; i < sortedMatchingRows.length; i++) {
     for (var j = 0; j < numCols - 1; j++) {
       if (sortedMatchingRows[i][j] == null) {
         continue;
       }
-      else if (sortedMatchingRows[i][j].length != sortedTargetRows[i][j].length) {      
+      else if (sortedMatchingRows[i][j].length != sortedTargetRows[i][j].length) {
         if (diffRowURLs.indexOf(sortedMatchingRows[i][rowURLIndex]) == -1) { diffRowURLs.push(sortedMatchingRows[i][rowURLIndex]); }
-      } 
+      }
       else if (sortedMatchingRows[i][j] != sortedTargetRows[i][j]) {
         if (diffRowURLs.indexOf(sortedMatchingRows[i][rowURLIndex]) == -1) { diffRowURLs.push(sortedMatchingRows[i][rowURLIndex]); }
       }
     }
-    
+
     // Get the full row from source Coda table if one of the row URLs needs updating in the Sheets file
     diffRowURLs.map(function(row) {
       if (sortedMatchingRows[i][rowURLIndex] == row) {
         diffRows.push(sortedMatchingRows[i]);
       }
     })
-  } 
-  
+  }
+
   // Update row in Sheets
-  diffRows.map(function(row) {   
+  diffRows.map(function(row) {
     diffRowIndex = targetRowURLs.indexOf(row[rowURLIndex]);
     var sheetRow = toWorksheet.getRange(diffRowIndex + 2, 1, 1, numCols).getValues().flat();
     for (var i = 0; i < numCols - 1; i++) {
@@ -81,7 +81,7 @@ function updateSheet() {
       else if (row[i] != sheetRow[i]) {
         editCount++;
         toWorksheet.getRange(diffRowIndex + 2, i + 1, 1).setValue(row[i]);
-      }      
+      }
     }
   })
   Logger.log('::::: %s values changed in Coda => Updating "%s" in Google Sheets...', editCount, TARGET_WORKSHEET_NAME);
@@ -93,14 +93,14 @@ function addDeleteToSheet() {
   var allRows = prepRows();
   if (allRows['targetRows'].length > 0) {
     var targetRowURLs = toWorksheet.getRange(2, rowURLIndex + 1, allRows['targetRows'].length).getValues().flat();
-    var deletedRows = findDeletedRows(allRows['sourceRows'], targetRowURLs);    
+    var deletedRows = findDeletedRows(allRows['sourceRows'], targetRowURLs);
   }
   else {
     targetRowURLs = [];
     deletedRows = [];
   }
-  var sourceRows = findNewRows(allRows['sourceRows'], targetRowURLs);  
-  
+  var sourceRows = findNewRows(allRows['sourceRows'], targetRowURLs);
+
   // Add rows to Sheets only if new rows exist
   if (sourceRows.length != 0) {
     Logger.log('::::: Adding %s new rows from Coda => "%s" in Google Sheets...', sourceRows.length, TARGET_WORKSHEET_NAME);
@@ -108,7 +108,7 @@ function addDeleteToSheet() {
     var convertedSourceRows = convertValues(sortedSourceRows);
     toWorksheet.getRange(toWorksheet.getLastRow() + 1, 1, convertedSourceRows.length, convertedSourceRows[0].length).setValues(convertedSourceRows)
   }
-  
+
   // Remove deleted rows
   if (deletedRows.length != 0) {
     Logger.log('::::: %s deleted rows in Coda => Deleting these row in "%s" in Google Sheets...', deletedRows.length, TARGET_WORKSHEET_NAME);
@@ -135,8 +135,8 @@ function findDeletedRows(sourceRows, targetRowURLs) {
     if (sourceRowURLs.indexOf(row) == -1) {
       deletedRows.push(row)
     }
-  })  
-  return deletedRows;                   
+  })
+  return deletedRows;
 }
 
 // Finds new rows in Coda table to sync
@@ -148,7 +148,7 @@ function findNewRows(sourceRows, targetRowURLs) {
       newRows.push(row)
     }
   })
-  return newRows;  
+  return newRows;
 }
 
 // Converts Coda table rows to 2D array of values for Sheets
@@ -156,8 +156,8 @@ function convertValues(rows) {
   var values = rows.map(function(row) {
     var rowValues = []
     row['cells'].map(function(rowValue) {
-      rowValues.push(rowValue['value'])  
-    })      
+      rowValues.push(rowValue['value'])
+    })
     return rowValues;
   })
   return values;
@@ -167,24 +167,24 @@ function convertValues(rows) {
 function sortCodaTableCols(sourceRows) {
   var headerCodaTable = sourceRows[0]['cells'].map(function(row) { return row['column'] });
   var sheetsColOrder = [];
-  
+
   headerRow.map(function(col) {
     sheetsColOrder.push(headerCodaTable.indexOf(col))
   })
- 
+
   var sortedSourceRows = sourceRows.map(function(row) {
     var cells = sheetsColOrder.map(function(col) {
       if (col == -1) {
-        return {        
+        return {
           column: null,
           value: null,
         }
-      } 
+      }
       else {
         return {
-          column: headerCodaTable[col], 
+          column: headerCodaTable[col],
           value: row['cells'][col]['value'],
-        }       
+        }
       }
     });
     return {cells: cells}
@@ -203,14 +203,14 @@ function retrieveRows() {
   var sourceTable = CodaAPI.getTable(SOURCE_DOC_ID, SOURCE_TABLE_ID);
   var sourceRows = [];
   var pageToken;
-  var sourceColumns = CodaAPI.listColumns(SOURCE_DOC_ID, SOURCE_TABLE_ID).items.map(function(item) { return item.name; });
-  
+  var sourceColumns = getAllColumns().map(function(column) { return column.name; });
+
   do {
     var response = CodaAPI.listRows(SOURCE_DOC_ID, SOURCE_TABLE_ID, {limit: 500, pageToken: pageToken, useColumnNames: true, sortBy: 'natural'});
     var sourceRows = sourceRows.concat(response.items);
     pageToken = response.nextPageToken;
   } while (pageToken);
-  
+
   var upsertBodyRows = sourceRows.map(function(row) {
     var cells = sourceColumns.map(function(colName) {
       return {
@@ -220,8 +220,22 @@ function retrieveRows() {
     });
     cells.push({column: TARGET_SHEET_SOURCE_ROW_COLUMN, value: row.browserLink});
     return {cells: cells};
-  });  
+  });
   return upsertBodyRows;
+}
+
+function getAllColumns() {
+  let result = [];
+  let pageToken;
+  do {
+    let page = CodaAPI.listColumns(SOURCE_DOC_ID, SOURCE_TABLE_ID, {
+      pageToken: pageToken,
+      limit: 100,
+    });
+    result = result.concat(page.items);
+    pageToken = page.nextPageToken;
+  } while (pageToken);
+  return result;
 }
 
 ////// Helper functions //////
