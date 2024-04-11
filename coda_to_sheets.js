@@ -22,77 +22,41 @@ rowURLIndex = headerRow.indexOf(TARGET_SHEET_SOURCE_ROW_COLUMN);
 
 // Run main sync functions
 function runSync() {
-  addDeleteToSheet();
-  updateSheet();
+  var allRows = prepRows();
+  addDeleteToSheet(allRows);
+  updateSheet(allRows);
 }
 
 // Updates existing rows in Sheet if any changes in Coda table
-function updateSheet() {
-  var matchingRows = [];
-  var diffRowURLs = [];
-  var diffRows = [];
-  var allRows = prepRows();
-  var sourceRows = allRows['sourceRows'];
-  var targetRows = allRows['targetRows'];
-  var sortedTargetRows = targetRows.sort(sortArray);
-  var targetRowURLs = toWorksheet.getRange(2, rowURLIndex + 1, targetRows.length).getValues().flat();
-  var editCount = 0;
-
-  // Find rows in Coda table only if it exists in Sheets
-  sourceRows.map(function(row) {
-    var rowURL = row['cells'].slice(-1)[0]['value'];
-    if (targetRowURLs.indexOf(rowURL) != -1) {
-      matchingRows.push(row)
+function updateSheet(allRows) {
+  let sourceRows = convertValues(sortCodaTableCols(allRows['sourceRows']));
+  let targetRows = allRows['targetRows'];
+  let numCols = targetRows[0].length;
+  let editCount = 0;
+  
+  for (let i = 0; i < targetRows.length; i++) {
+    let targetRow = targetRows[i];
+    let rowUrl = targetRow[rowURLIndex];
+    let sourceRow = sourceRows.find(row => row[rowURLIndex] == rowUrl);
+    if (!sourceRow) {
+      continue;
     }
-  })
-  var sortedMatchingRows = convertValues(sortCodaTableCols(matchingRows)).sort(sortArray)
-  var numCols = sortedMatchingRows[0].length;
-
-  // Create array of rows that need to be updated in Sheets
-  for (var i = 0; i < sortedMatchingRows.length; i++) {
-    for (var j = 0; j < numCols - 1; j++) {
-      if (sortedMatchingRows[i][j] == null) {
-        continue;
-      }
-      else if (sortedMatchingRows[i][j].length != sortedTargetRows[i][j].length) {
-        if (diffRowURLs.indexOf(sortedMatchingRows[i][rowURLIndex]) == -1) { diffRowURLs.push(sortedMatchingRows[i][rowURLIndex]); }
-      }
-      else if (sortedMatchingRows[i][j] != sortedTargetRows[i][j]) {
-        if (diffRowURLs.indexOf(sortedMatchingRows[i][rowURLIndex]) == -1) { diffRowURLs.push(sortedMatchingRows[i][rowURLIndex]); }
-      }
-    }
-
-    // Get the full row from source Coda table if one of the row URLs needs updating in the Sheets file
-    diffRowURLs.map(function(row) {
-      if (sortedMatchingRows[i][rowURLIndex] == row) {
-        diffRows.push(sortedMatchingRows[i]);
-      }
-    })
-  }
-
-  // Update row in Sheets
-  diffRows.map(function(row) {
-    diffRowIndex = targetRowURLs.indexOf(row[rowURLIndex]);
-    var sheetRow = toWorksheet.getRange(diffRowIndex + 2, 1, 1, numCols).getValues().flat();
-    for (var i = 0; i < numCols - 1; i++) {
-      if (row[i] == null) {
-        continue;
-      }
-      else if (row[i] != sheetRow[i]) {
+    for (let j = 0; j < numCols - 1; j++) {
+      let sourceValue = sourceRow[j];
+      let targetValue = targetRow[j];
+      if (sourceValue != null && sourceValue != targetValue) {
         editCount++;
-        toWorksheet.getRange(diffRowIndex + 2, i + 1, 1).setValue(row[i]);
+        toWorksheet.getRange(i + 2, j + 1, 1).setValue(sourceValue);
       }
     }
-  })
+  }
   Logger.log('::::: %s values changed in Coda => Updating "%s" in Google Sheets...', editCount, TARGET_WORKSHEET_NAME);
-  editCount = 0;
 }
 
 // Append new data from Coda table to Sheets and delete any rows from Sheets if in Coda table
-function addDeleteToSheet() {
-  var allRows = prepRows();
+function addDeleteToSheet(allRows) {
   if (allRows['targetRows'].length > 0) {
-    var targetRowURLs = toWorksheet.getRange(2, rowURLIndex + 1, allRows['targetRows'].length).getValues().flat();
+    var targetRowURLs = allRows['targetRows'].map(row => row[rowURLIndex]);
     var deletedRows = findDeletedRows(allRows['sourceRows'], targetRowURLs);
   }
   else {
